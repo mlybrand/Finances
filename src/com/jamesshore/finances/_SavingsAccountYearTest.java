@@ -2,6 +2,7 @@ package com.jamesshore.finances;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class _SavingsAccountYearTest {
@@ -43,6 +44,38 @@ public class _SavingsAccountYearTest {
 	}
 	
 	@Test
+	public void capitalGainsTaxesDoNotEarnInterest() { // 08:14
+		SavingsAccountYear year = new SavingsAccountYear(10000, 0, 10);
+		year.withdraw(1000);
+		assertEquals("capital gains withdrawn", 1000, year.capitalGainsWithdrawn());
+		assertEquals("capital gains tax", 333, year.capitalGainsTaxIncurred(25));
+//		assertEquals("total withdrawn", 1333, year.totalWithdrawnIncludingCapitalGains(25));
+		assertEquals("interest earned", 866, year.interestEarned(25));
+	}
+	
+	@Test
+	public void interestEarnedIsStartingBalanceCombinedWithInterestRate() {
+		SavingsAccountYear year = new SavingsAccountYear(10000, 3000, 10);
+		assertEquals(1000, year.interestEarned(25));
+	}
+	
+	@Test
+	public void withdrawnFundsDoNotEarnInterest() {
+		SavingsAccountYear year = newAccount();
+		year.withdraw(1000);
+		assertEquals(900, year.interestEarned(25));
+	}
+	
+	@Test
+	public void totalWithdrawnIncludingCapitalGains() {
+		SavingsAccountYear year = new SavingsAccountYear(10000, 0, 10);
+		year.withdraw(1000);
+		assertEquals("capital gains tax", 333, year.capitalGainsTaxIncurred(25));
+		assertEquals("total withdrawn", 1333, year.totalWithdrawn(25));
+	}
+	
+	@Test
+	@Ignore
 	public void endingCapitalGainsIncludesInterestEarned() {
 		SavingsAccountYear year = new SavingsAccountYear(10000, 3000, 10);
 		assertEquals(7000, year.startingCapitalGains());
@@ -55,18 +88,11 @@ public class _SavingsAccountYearTest {
 	}
 	
 	@Test
-	public void withdrawnFundsDoNotEarnInterest() {
-		SavingsAccountYear year = newAccount();
-		year.withdraw(1000);
-		assertEquals(9900, year.endingBalance(25));
-	}
-	
-	@Test
 	public void multipleWithdrawalsInAYearAreTotaled() {
 		SavingsAccountYear year = newAccount();
 		year.withdraw(1000);
 		year.withdraw(2000);
-		assertEquals(3000, year.totalWithdrawn());
+		assertEquals(3000, year.totalWithdrawn(25));
 	}
 	
 	@Test
