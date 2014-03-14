@@ -2,7 +2,6 @@ package com.jamesshore.finances;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class _SavingsAccountYearTest {
@@ -44,12 +43,12 @@ public class _SavingsAccountYearTest {
 	}
 	
 	@Test
-	public void capitalGainsTaxesDoNotEarnInterest() { // 08:14
+	public void capitalGainsTaxesDoNotEarnInterest() {
 		SavingsAccountYear year = new SavingsAccountYear(10000, 0, 10);
 		year.withdraw(1000);
 		assertEquals("capital gains withdrawn", 1000, year.capitalGainsWithdrawn());
 		assertEquals("capital gains tax", 333, year.capitalGainsTaxIncurred(25));
-//		assertEquals("total withdrawn", 1333, year.totalWithdrawnIncludingCapitalGains(25));
+		assertEquals("total withdrawn", 1333, year.totalWithdrawn(25));
 		assertEquals("interest earned", 866, year.interestEarned(25));
 	}
 	
@@ -75,11 +74,21 @@ public class _SavingsAccountYearTest {
 	}
 	
 	@Test
-	@Ignore
 	public void endingCapitalGainsIncludesInterestEarned() {
 		SavingsAccountYear year = new SavingsAccountYear(10000, 3000, 10);
-		assertEquals(7000, year.startingCapitalGains());
-		assertEquals(4000, year.endingCapitalGains());
+		assertEquals("starting capital gains", 7000, year.startingCapitalGains());
+		assertEquals("ending capital gains", 8000, year.endingCapitalGains(25));
+	}
+	
+	@Test
+	public void endingCapitalGainsIncludesCapitalGainsWithdrawn() {
+		SavingsAccountYear year = new SavingsAccountYear(10000, 0, 10);
+		assertEquals("starting capital gains", 10000, year.startingCapitalGains());
+		year.withdraw(1000);
+		assertEquals("capital gains withdrawn", 1000, year.capitalGainsWithdrawn());
+		assertEquals("capital gains tax", 333, year.capitalGainsTaxIncurred(25));
+		assertEquals("interest earned", 866, year.interestEarned(25));
+		assertEquals("ending capital gains", 10533, year.endingCapitalGains(25));
 	}
 	
 	@Test

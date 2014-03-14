@@ -9,3 +9,4 @@ Calculate endingCapitalGains()
 Consider what to do about withdrawing more than the starting balance -- assert that this is impossible?
 Fix SavingsAccountYearTest.newAccount abstraction -- use it or don't
 We're passing in capitalGainsTaxRate everywhere -- put it in constructor?
+Eliminate totalWithdrawnExceptCapitalGains()?
